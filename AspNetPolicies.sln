@@ -5,13 +5,13 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{7D9A9562-66E2-4B28-8FD6-64C10D8E9F3E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetPolicies.Api", "AspNetPolicies.Api\AspNetPolicies.Api.csproj", "{E215F017-03F5-4061-B504-F1E9B1E7B98B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetPolicies.Api", "src\AspNetPolicies.Api\AspNetPolicies.Api.csproj", "{E215F017-03F5-4061-B504-F1E9B1E7B98B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetPolicies.Domain", "AspNetPolicies.Domain\AspNetPolicies.Domain.csproj", "{3D082D15-E53A-4321-9E84-8347903359C8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetPolicies.Domain", "src\AspNetPolicies.Domain\AspNetPolicies.Domain.csproj", "{3D082D15-E53A-4321-9E84-8347903359C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetPolicies.Data", "AspNetPolicies.Data\AspNetPolicies.Data.csproj", "{7D18B24A-4D9E-42C7-ABB4-12F99DCA1005}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetPolicies.Data", "src\AspNetPolicies.Data\AspNetPolicies.Data.csproj", "{7D18B24A-4D9E-42C7-ABB4-12F99DCA1005}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetPolicies.Security", "AspNetPolicies.Security\AspNetPolicies.Security.csproj", "{C4EB1B10-6C3C-42CF-9A7A-48BB0428EE1B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetPolicies.Security", "src\AspNetPolicies.Security\AspNetPolicies.Security.csproj", "{C4EB1B10-6C3C-42CF-9A7A-48BB0428EE1B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

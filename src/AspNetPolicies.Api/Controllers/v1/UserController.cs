@@ -4,7 +4,7 @@
 
 namespace AspNetPolicies.Api.Controllers.v1
 {
-    [("1.0")]
+    [ApiVersion("1.0")]
     public class UserController : ApiControllerBase
     {
         // GET: api/<UserController>
