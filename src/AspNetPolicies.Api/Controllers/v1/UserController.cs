@@ -1,42 +1,52 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AspNetPolicies.Data.Repositories;
+using AspNetPolicies.Domain.Entities;
+using AspNetPolicies.Domain.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+namespace AspNetPolicies.Api.Controllers.v1;
 
-namespace AspNetPolicies.Api.Controllers.v1
+[ApiVersion("1.0")]
+public class UserController : ApiControllerBase
 {
-    [ApiVersion("1.0")]
-    public class UserController : ApiControllerBase
+    private readonly IRepository<User> _userRepository;
+    
+    public UserController(IRepository<User> userRepository)
     {
-        // GET: api/<UserController>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
+        _userRepository = userRepository;
+    }
 
-        // GET api/<UserController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        // POST api/<UserController>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
-
-        // PUT api/<UserController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<UserController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+    [HttpGet("")]
+    public async Task<IActionResult> GetUsers()
+    {
+        var users = await _userRepository.GetAllAsync();
+        return Ok(users);
+    }
+    
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetUser(int id)
+    {
+        var user = await _userRepository.GetByIdAsync(id);
+        return Ok(user);
+    }
+    
+    [HttpPost("")]
+    public async Task<IActionResult> CreateUser(User user)
+    {
+        var createdUser = await _userRepository.AddAsync(user);
+        return Ok(createdUser);
+    }
+    
+    [HttpPut("")]
+    public async Task<IActionResult> UpdateUser(User user)
+    {
+        var updatedUser = await _userRepository.UpdateAsync(user);
+        return Ok(updatedUser);
+    }
+    
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteUser(int id)
+    {
+        var deletedUser = await _userRepository.DeleteAsync(id);
+        return Ok(deletedUser);
     }
 }
