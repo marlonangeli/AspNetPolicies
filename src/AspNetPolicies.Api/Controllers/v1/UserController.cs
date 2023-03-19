@@ -1,52 +1,66 @@
-﻿using AspNetPolicies.Data.Repositories;
+﻿using AspNetPolicies.Domain.Dtos;
 using AspNetPolicies.Domain.Entities;
 using AspNetPolicies.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace AspNetPolicies.Api.Controllers.v1;
 
-[ApiVersion("1.0")]
 public class UserController : ApiControllerBase
 {
-    private readonly IRepository<User> _userRepository;
+    private readonly IRepository<User> _repository;
     
-    public UserController(IRepository<User> userRepository)
+    public UserController(IRepository<User> repository)
     {
-        _userRepository = userRepository;
+        _repository = repository;
     }
 
     [HttpGet("")]
     public async Task<IActionResult> GetUsers()
     {
-        var users = await _userRepository.GetAllAsync();
+        var users = await _repository.GetAllAsync();
         return Ok(users);
     }
     
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUser(int id)
     {
-        var user = await _userRepository.GetByIdAsync(id);
+        var user = await _repository.GetQueryable()
+            .Include(i => i.DocumentsOwnered)
+            .Include(i => i.DocumentsAuthorized)
+            .FirstOrDefaultAsync(x => x.Id == id);
         return Ok(user);
     }
     
     [HttpPost("")]
-    public async Task<IActionResult> CreateUser(User user)
+    public async Task<IActionResult> CreateUser(UserDto user)
     {
-        var createdUser = await _userRepository.AddAsync(user);
+        var entity = new User
+        {
+            Name = user.Name,
+            Function = user.Function
+        };
+        var createdUser = await _repository.AddAsync(entity);
         return Ok(createdUser);
     }
     
-    [HttpPut("")]
-    public async Task<IActionResult> UpdateUser(User user)
+    [HttpPut("{id} ")]
+    public async Task<IActionResult> UpdateUser(int id, UserDto user)
     {
-        var updatedUser = await _userRepository.UpdateAsync(user);
+        var entity = new User
+        {
+            Id = id,
+            Name = user.Name,
+            Function = user.Function
+        };
+        var updatedUser = await _repository.UpdateAsync(entity);
         return Ok(updatedUser);
     }
     
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteUser(int id)
     {
-        var deletedUser = await _userRepository.DeleteAsync(id);
+        var deletedUser = await _repository.DeleteAsync(id);
         return Ok(deletedUser);
     }
 }
