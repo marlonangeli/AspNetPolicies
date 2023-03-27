@@ -1,6 +1,7 @@
 ﻿using AspNetPolicies.Domain.Dtos;
 using AspNetPolicies.Domain.Entities;
 using AspNetPolicies.Domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +16,13 @@ public class UserController : ApiControllerBase
         _repository = repository;
     }
 
+    [HttpGet("context")]
+    public IActionResult GetContext()
+    {
+        return Ok(User.Claims);
+    }
+    
+    [Authorize(Roles = "api:admin")]
     [HttpGet("")]
     public async Task<IActionResult> GetUsers()
     {

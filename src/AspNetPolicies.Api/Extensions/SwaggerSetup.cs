@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using AspNetPolicies.Security.Extensions;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerUI;
@@ -7,7 +8,7 @@ namespace AspNetPolicies.Api.Extensions;
 
 public static class SwaggerSetup
 {
-    public static void AddSwagger(this IServiceCollection services)
+    public static void AddSwagger(this IServiceCollection services, IConfiguration configuration, bool useOidc = false)
     {
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(options =>
@@ -21,10 +22,11 @@ public static class SwaggerSetup
                 Title = "AspNetPolicies.Api",
                 Version = "v1"
             });
+            if (useOidc) options.ConfigureOidcSwagger(configuration);
         });
     }
 
-    public static void UseSwaggerUI(this WebApplication app)
+    public static void UseSwaggerUI(this WebApplication app, IConfiguration configuration, bool useOidc = false)
     {
         app.UseSwagger();
         app.UseSwaggerUI(options =>
@@ -38,8 +40,8 @@ public static class SwaggerSetup
                 options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName);
             }
             options.RoutePrefix = "swagger";
-
-            options.DocExpansion(DocExpansion.None);
+            
+            if (useOidc) options.ConfigureOidcSwaggerUI(configuration);
         });
     }
 }

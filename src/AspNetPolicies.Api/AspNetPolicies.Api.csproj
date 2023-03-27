@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AspNetPolicies.Data\AspNetPolicies.Data.csproj" />
+    <ProjectReference Include="..\AspNetPolicies.Security\AspNetPolicies.Security.csproj" />
   </ItemGroup>
 
 </Project>

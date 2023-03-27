@@ -1,6 +1,7 @@
 ﻿using AspNetPolicies.Domain.Dtos;
 using AspNetPolicies.Domain.Entities;
 using AspNetPolicies.Domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +16,7 @@ public class DocumentCategoryController : ApiControllerBase
         _repository = repository;
     }
     
+    [Authorize(Roles = "api:read")]
     [HttpGet("")]
     public async Task<IActionResult> GetDocumentCategories()
     {
@@ -22,6 +24,7 @@ public class DocumentCategoryController : ApiControllerBase
         return Ok(documentCategories);
     }
     
+    [Authorize(Roles = "api:read")]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetDocumentCategory(int id)
     {
