@@ -1,3 +1,0 @@
-[submodule "keycloak-in-docker"]
-	path = keycloak-in-docker
-	url = https://github.com/little-pinecone/keycloak-in-docker.git
