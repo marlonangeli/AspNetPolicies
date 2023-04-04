@@ -16,13 +16,13 @@ public class UserController : ApiControllerBase
         _repository = repository;
     }
 
+    [Authorize(Roles = "api:read")]
     [HttpGet("context")]
     public IActionResult GetContext()
     {
         return Ok(User.Claims);
     }
     
-    [Authorize(Roles = "api:admin")]
     [HttpGet("")]
     public async Task<IActionResult> GetUsers()
     {
