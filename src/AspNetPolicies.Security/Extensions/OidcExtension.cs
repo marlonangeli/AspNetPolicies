@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using AspNetPolicies.Security.Settings;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -19,51 +20,50 @@ public static class OidcExtension
     {
         var oidcSettings = configuration.GetSection(OidcSettings.SectionName).Get<OidcSettings>();
         services.AddAuthentication(options =>
-        {
-            options.DefaultAuthenticateScheme = OpenIdConnectDefaults.AuthenticationScheme;
-            options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-        })
-        .AddCookie("Cookies")
-        .AddOpenIdConnect(options =>
-        {
-            options.Authority = oidcSettings.Authority;
-            options.ClientId = oidcSettings.ClientId;
-            options.ClientSecret = oidcSettings.ClientSecret;
-            options.RequireHttpsMetadata = false;
-            options.ResponseType = "code id_token";
-            options.RemoteSignOutPath = new PathString("/SignOut");
-            options.SaveTokens = true;
-            options.GetClaimsFromUserInfoEndpoint = true;
-            options.BackchannelHttpHandler = new HttpClientHandler
             {
-                UseProxy = false
-            };
-        })
-        .AddJwtBearer("Bearer", options =>
-        {
-            options.Authority = oidcSettings.Authority;
-            options.Audience = oidcSettings.ClientId;
-            options.SaveToken = true;
-            options.IncludeErrorDetails = true;
-            options.TokenValidationParameters = new TokenValidationParameters
+                options.DefaultAuthenticateScheme = OpenIdConnectDefaults.AuthenticationScheme;
+                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+            })
+            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddOpenIdConnect(options =>
             {
-                NameClaimType = ClaimTypes.Name,
-                RoleClaimType = ClaimTypes.Role
-            };
-        });
+                options.Authority = oidcSettings.Authority;
+                options.ClientId = oidcSettings.ClientId;
+                options.ClientSecret = oidcSettings.ClientSecret;
+                options.RequireHttpsMetadata = false;
+                options.ResponseType = "code id_token";
+                options.RemoteSignOutPath = new PathString("/SignOut");
+                options.SaveTokens = true;
+                options.GetClaimsFromUserInfoEndpoint = true;
+
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    NameClaimType = ClaimTypes.Name,
+                    RoleClaimType = ClaimTypes.Role,
+                    ValidIssuer = oidcSettings.Authority,
+                    ValidateAudience = false,
+                    ValidateIssuer = false,
+                    ValidateIssuerSigningKey = false,
+                    ValidateLifetime = false,
+                    ValidateActor = false,
+                    ValidateTokenReplay = false
+                };
+            });
     }
-    
+
     public static void ConfigureOidcSwagger(this SwaggerGenOptions options, IConfiguration configuration)
     {
         var oidcSettings = configuration.GetSection(OidcSettings.SectionName).Get<OidcSettings>();
         var oidcUrl = Path.Combine(oidcSettings.Authority, "protocol/openid-connect");
-            
+
         options.AddSecurityDefinition(OpenIdConnectDefaults.AuthenticationScheme, new OpenApiSecurityScheme
-        {   
+        {
             Type = SecuritySchemeType.OpenIdConnect,
             OpenIdConnectUrl = new Uri(Path.Combine(oidcSettings.Authority, ".well-known/openid-configuration")),
-            Flows = new OpenApiOAuthFlows()
+            Description = "OpenID Connect",
+            In = ParameterLocation.Header,
+            Flows = new OpenApiOAuthFlows
             {
                 AuthorizationCode = new OpenApiOAuthFlow
                 {
@@ -74,7 +74,7 @@ public static class OidcExtension
                 }
             }
         });
-        
+
         options.AddSecurityRequirement(new OpenApiSecurityRequirement
         {
             {
@@ -85,7 +85,8 @@ public static class OidcExtension
                         Type = ReferenceType.SecurityScheme,
                         Id = OpenIdConnectDefaults.AuthenticationScheme
                     }
-                }, new string[] {}
+                },
+                new string[] { }
             }
         });
     }
@@ -96,7 +97,9 @@ public static class OidcExtension
         options.OAuthClientId(oidcSettings.ClientId);
         options.OAuthClientSecret(oidcSettings.ClientSecret);
         options.OAuthAppName(oidcSettings.ClientId);
-        
+
+        options.OAuthUsePkce();
+        options.OAuthUseBasicAuthenticationWithAccessCodeGrant();
         options.ConfigObject.AdditionalItems["tagsSorter"] = "alpha";
         options.DisplayRequestDuration();
         options.DocExpansion(DocExpansion.None);
