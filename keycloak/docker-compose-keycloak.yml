@@ -14,9 +14,7 @@ services:
       - DB_VENDOR=${KEYCLOAK_DATABASE_VENDOR}
       - KEYCLOAK_IMPORT=/tmp/realm-export.json
     volumes:
-      - ./keycloak/realms/realm-export.json:/tmp/realm-export.json
-      - ./keycloak/scripts/disable-theme-cache.cli:/opt/jboss/startup-scripts/disable-theme-cache.cli
-      - ./keycloak/themes/custom:/opt/jboss/keycloak/themes/custom
+      - ./realm-export.json:/tmp/realm-export.json
     networks:
       internal:
     depends_on:
