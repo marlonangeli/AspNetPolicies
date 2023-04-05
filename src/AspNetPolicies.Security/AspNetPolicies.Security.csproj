@@ -15,17 +15,4 @@
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.2.3" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Remove="Handlers\BaseHandler.cs" />
-    <Compile Remove="Handlers\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Remove="Handlers\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Handlers\**" />
-  </ItemGroup>
-
 </Project>

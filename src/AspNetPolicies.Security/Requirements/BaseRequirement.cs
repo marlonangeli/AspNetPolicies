@@ -4,7 +4,7 @@ namespace AspNetPolicies.Security.Requirements;
 
 public abstract class BaseRequirement : IAuthorizationRequirement
 {
-    private string Policy { get; }
+    public string Policy { get; set; }
 
     public BaseRequirement(string policy)
     {

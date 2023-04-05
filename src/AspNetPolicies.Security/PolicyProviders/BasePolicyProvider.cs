@@ -19,7 +19,7 @@ public abstract class BasePolicyProvider<TRequirement> : IAuthorizationPolicyPro
         try
         {
             var policy = new AuthorizationPolicyBuilder();
-            policy.AddRequirements(new TRequirement());
+            policy.AddRequirements(new TRequirement { Policy = PolicyPrefix + policyName });
             return Task.FromResult(policy.Build());
         }
         catch (Exception e)

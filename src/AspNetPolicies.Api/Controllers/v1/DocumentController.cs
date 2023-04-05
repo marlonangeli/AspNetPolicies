@@ -1,6 +1,8 @@
-﻿using AspNetPolicies.Domain.Dtos;
+﻿using AspNetPolicies.Api.Constants;
+using AspNetPolicies.Domain.Dtos;
 using AspNetPolicies.Domain.Entities;
 using AspNetPolicies.Domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,6 +28,20 @@ public class DocumentController : ApiControllerBase
     
     [HttpGet("{id}")]
     public async Task<IActionResult> GetDocument(int id)
+    {
+        var document = await _repository.GetQueryable()
+            .Include(i => i.AuthorizedUsers)
+            .Include(i => i.OwnerUser)
+            .Include(i => i.DocumentCategories)
+            .Include(i => i.DocumentRevisions)
+            .Include(i => i.DocumentTags)
+            .FirstOrDefaultAsync(x => x.Id == id);
+        return Ok(document);
+    }
+    
+    [Authorize(Policy = Policies.USER_OWNER_DOCUMENT)]
+    [HttpGet("owner/{id}")]
+    public async Task<IActionResult> GetDocumentOwner(int id)
     {
         var document = await _repository.GetQueryable()
             .Include(i => i.AuthorizedUsers)

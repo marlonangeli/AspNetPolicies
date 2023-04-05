@@ -1,4 +1,5 @@
-﻿using AspNetPolicies.Domain.Dtos;
+﻿using AspNetPolicies.Api.Constants;
+using AspNetPolicies.Domain.Dtos;
 using AspNetPolicies.Domain.Entities;
 using AspNetPolicies.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -16,7 +17,7 @@ public class UserController : ApiControllerBase
         _repository = repository;
     }
 
-    [Authorize(Roles = "api:read")]
+    [Authorize(Roles = Roles.READ)]
     [HttpGet("context")]
     public IActionResult GetContext()
     {

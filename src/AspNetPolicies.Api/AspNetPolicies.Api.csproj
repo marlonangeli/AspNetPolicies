@@ -18,11 +18,6 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Extensions\" />
-  </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\AspNetPolicies.Data\AspNetPolicies.Data.csproj" />
     <ProjectReference Include="..\AspNetPolicies.Security\AspNetPolicies.Security.csproj" />
