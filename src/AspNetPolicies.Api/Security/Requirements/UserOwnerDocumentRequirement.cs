@@ -1,4 +1,5 @@
 ﻿using AspNetPolicies.Api.Constants;
+using AspNetPolicies.Security.Exceptions;
 using AspNetPolicies.Security.Requirements;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authorization;
@@ -15,9 +16,14 @@ public class UserOwnerDocumentRequirement : BaseRequirement
 
     public override bool IsAuthorized(AuthorizationHandlerContext context)
     {
-        var json = context.User.Claims.Where(x => x.Type == "sicop_attributes").Select(x => x.Value).FirstOrDefault();
+        var json = context.User.Claims.Where(x => x.Type == ClaimTypes.DOCUMENT).Select(x => x.Value)
+            .FirstOrDefault();
+
         if (string.IsNullOrEmpty(json))
-            return false;
+        {
+            throw new UnauthorizedException($"User does not have {ClaimTypes.DOCUMENT} claim");
+        }
+
         var userId = JsonConvert.DeserializeObject<Dictionary<string, int>>(json);
         if (!userId.ContainsKey("userId"))
             return false;

@@ -24,6 +24,13 @@ public class UserController : ApiControllerBase
         return Ok(User.Claims);
     }
     
+    [HttpGet("permissions")]
+    public IActionResult GetPermissions()
+    {
+        return Ok(User.Claims);
+    }
+    
+    [Authorize(Roles = Roles.ADMIN)]
     [HttpGet("")]
     public async Task<IActionResult> GetUsers()
     {
@@ -53,7 +60,7 @@ public class UserController : ApiControllerBase
         return Ok(createdUser);
     }
     
-    [HttpPut("{id} ")]
+    [HttpPut("{id}")]
     public async Task<IActionResult> UpdateUser(int id, UserDto user)
     {
         var entity = new User
