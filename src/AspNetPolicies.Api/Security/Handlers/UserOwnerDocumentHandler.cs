@@ -4,7 +4,6 @@ using AspNetPolicies.Domain.Interfaces;
 using AspNetPolicies.Security.Exceptions;
 using AspNetPolicies.Security.Handlers;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
 
 namespace AspNetPolicies.Api.Security.Handlers;
 
@@ -30,15 +29,15 @@ public class UserOwnerDocumentHandler : BaseAuthorizationHandler<UserOwnerDocume
         if (!requirement.IsAuthorized(context))
             return false;
 
-        var documentId = int.Parse(_httpContextAccessor.HttpContext.Request.RouteValues["id"].ToString());
-        
-        var doc = await _documentRepository.GetQueryable()
-            .AsNoTracking()
-            .Where(x => x.OwnerUserId == requirement.UserId && x.Id == documentId)
-            .FirstOrDefaultAsync();
-
-        if (doc == null)
-            throw new UnauthorizedException("User does not have permission to access this document");
+        // var documentId = int.Parse(_httpContextAccessor.HttpContext.Request.RouteValues["id"].ToString());
+        //
+        // var doc = await _documentRepository.GetQueryable()
+        //     .AsNoTracking()
+        //     .Where(x => x.OwnerUserId == requirement.UserId && x.Id == documentId)
+        //     .FirstOrDefaultAsync();
+        //
+        // if (doc == null)
+        //     throw new UnauthorizedException("User does not have permission to access this document");
         
         return true;
     }

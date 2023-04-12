@@ -2,17 +2,17 @@ using System.Net;
 using AspNetPolicies.Api.Extensions;
 using AspNetPolicies.Data.Context;
 using AspNetPolicies.Security.Exceptions;
-using AspNetPolicies.Security.Extensions;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using Swashbuckle.AspNetCore.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddOidcAuthentication(builder.Configuration);
-
+builder.Services.AddSwagger(builder.Configuration, true);
 builder.Services.AddControllers()
     .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
 builder.Services.AddCors();
@@ -24,7 +24,6 @@ builder.Services.AddDbContext<DocumentsContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 builder.Services.AddServices();
-builder.Services.AddSwagger(builder.Configuration, true);
 
 var app = builder.Build();
 
@@ -44,7 +43,6 @@ app.UseExceptionHandler(errorApp =>
         }
     });
 });
-
 
 // Configure the HTTP request pipeline.
 app.UseSwaggerUI(builder.Configuration, true);

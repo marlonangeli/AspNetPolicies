@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace AspNetPolicies.Api.Controllers;
 
@@ -9,4 +8,3 @@ namespace AspNetPolicies.Api.Controllers;
 public class ApiControllerBase : ControllerBase
 {
 }
-

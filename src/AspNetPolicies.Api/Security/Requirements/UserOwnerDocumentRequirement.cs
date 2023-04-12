@@ -1,7 +1,6 @@
 ﻿using AspNetPolicies.Api.Constants;
 using AspNetPolicies.Security.Exceptions;
 using AspNetPolicies.Security.Requirements;
-using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authorization;
 
 namespace AspNetPolicies.Api.Security.Requirements;
@@ -23,11 +22,7 @@ public class UserOwnerDocumentRequirement : BaseRequirement
         {
             throw new UnauthorizedException($"User does not have {ClaimTypes.DOCUMENT} claim");
         }
-
-        var userId = JsonConvert.DeserializeObject<Dictionary<string, int>>(json);
-        if (!userId.ContainsKey("userId"))
-            return false;
-        UserId = userId["userId"];
+        
         return true;
     }
 }

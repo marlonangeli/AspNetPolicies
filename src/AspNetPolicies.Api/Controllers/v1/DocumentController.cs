@@ -18,14 +18,14 @@ public class DocumentController : ApiControllerBase
         _repository = repository;
         _userRepository = userRepository;
     }
-    
+
     [HttpGet("")]
     public async Task<IActionResult> GetDocuments()
     {
         var documents = await _repository.GetAllAsync();
         return Ok(documents);
     }
-    
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetDocument(int id)
     {
@@ -38,7 +38,7 @@ public class DocumentController : ApiControllerBase
             .FirstOrDefaultAsync(x => x.Id == id);
         return Ok(document);
     }
-    
+
     [Authorize(Policy = Policies.USER_OWNER_DOCUMENT)]
     [HttpGet("owner/{id}")]
     public async Task<IActionResult> GetDocumentOwner(int id)
@@ -52,7 +52,16 @@ public class DocumentController : ApiControllerBase
             .FirstOrDefaultAsync(x => x.Id == id);
         return Ok(document);
     }
-    
+
+    [HttpGet("asyncdocument")]
+    public async IAsyncEnumerable<Document> GetOnSaleProductsAsync()
+    {
+        var documents = _repository.GetQueryable().OrderBy(p => p.Name).AsAsyncEnumerable();
+
+        await foreach (var document in documents)
+            yield return document;
+    }
+
     [HttpPost("")]
     public async Task<IActionResult> CreateDocument(DocumentDto document)
     {
@@ -65,7 +74,8 @@ public class DocumentController : ApiControllerBase
         var createdDocument = await _repository.AddAsync(entity);
         return Ok(createdDocument);
     }
-    
+
+    [Authorize(Policy = Policies.USER_OWNER_DOCUMENT, Roles = Roles.WRITE)]
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateDocument(int id, DocumentDto document)
     {
@@ -79,7 +89,7 @@ public class DocumentController : ApiControllerBase
         var updatedDocument = await _repository.UpdateAsync(entity);
         return Ok(updatedDocument);
     }
-    
+
     [HttpPut("{id}/add-user/{userId}")]
     public async Task<IActionResult> AddUserToDocument(int id, int userId)
     {
@@ -94,13 +104,13 @@ public class DocumentController : ApiControllerBase
         var user = await _userRepository.GetByIdAsync(userId);
         if (user == null)
             return NotFound();
-        
+
         document.AuthorizedUsers.Add(user);
-        
+
         var updatedDocument = await _repository.UpdateAsync(document);
         return Ok(updatedDocument);
     }
-    
+
     [HttpPut("{id}/remove-user/{userId}")]
     public async Task<IActionResult> RemoveUserFromDocument(int id, int userId)
     {
@@ -115,13 +125,13 @@ public class DocumentController : ApiControllerBase
         var user = await _userRepository.GetByIdAsync(userId);
         if (user == null)
             return NotFound();
-        
+
         document.AuthorizedUsers.Remove(user);
-        
+
         var updatedDocument = await _repository.UpdateAsync(document);
         return Ok(updatedDocument);
     }
-    
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteDocument(int id)
     {

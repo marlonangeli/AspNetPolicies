@@ -2,7 +2,7 @@
 using AspNetPolicies.Security.Extensions;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.SwaggerUI;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace AspNetPolicies.Api.Extensions;
 
@@ -22,8 +22,10 @@ public static class SwaggerSetup
                 Title = "AspNetPolicies.Api",
                 Version = "v1"
             });
+            options.OperationFilter<SecurityRequirementsOperationFilter>();
             if (useOidc) options.ConfigureOidcSwagger(configuration);
         });
+        if (useOidc) services.AddOidcAuthentication(configuration);
     }
 
     public static void UseSwaggerUI(this WebApplication app, IConfiguration configuration, bool useOidc = false)
